@@ -1,3 +1,10 @@
+/*
+	bài này mục đích là dùng thuật toán đơn giản(ko tối ưu) để tự động đoán từ trong hangman thay vì tự đoán như xưa
+	máy 1 sẽ cho biết độ dài xâu kết quả , máy 2 lọc ra danh sách các từ tiềm năng có thể làm kết quả
+	sau đó máy 2 sẽ đếm số lần xuất hiện các kí tự trong danh sách tiềm năng đó và chọn ra thằng xuất hiện nhiều nhất để đoán
+	sau khi đoán và nhận về xâu kết quả (xâu mã hóa đc upd nếu đúng) của máy 1 , máy 2 sẽ lọc dần danh sách các từ tiềm năng
+	cứ lọc dần dần như thế cho đến khi đúng hoặc thua khi vượt quá số lượt cho phép
+*/
 #include "simpleai.h"
 #include<bits/stdc++.h>
 using namespace std;
@@ -43,6 +50,7 @@ vector<string> filterWordsByLen(int wordLen, const vector<string>& vocabulary)
 char nextCharWhenWordIsNotInDictionary(const set<char>& selectedChars)
 {
     /// mex ( set<char> )
+	/// chọn ra kí tự nhỏ nhất không xuất hiện trong tập kí tự đã chọn
     char answer;
     //Write your code here
 	for(char i = 'a';i  <= 'z'; i ++ ) if(selectedChars.find(i) == selectedChars.end()) {
@@ -61,6 +69,7 @@ char nextCharWhenWordIsNotInDictionary(const set<char>& selectedChars)
 
 map<char, int> countOccurrences(const vector<string>& candidateWords)
 {
+	/// đếm số lần xuất hiện các kí tự trong vector<string>
     map<char, int> answer;
     //Write your code here
     for(string i : candidateWords) for(char j : i) answer[j] ++ ;
@@ -77,13 +86,14 @@ map<char, int> countOccurrences(const vector<string>& candidateWords)
 
 char findMostFrequentChar(const map<char, int>& occurrences, const set<char>& selectedChars)
 {
+	/// chọn ra kí tự xuất hiện nhiều nhất trong map mà nằm ngoài tập kí tự đã chọn
     char answer;
     //Write your code here
     int d = 0  ;
     for(char i = 'a';i <= 'z';i ++) if(selectedChars.find(i) == selectedChars.end()) {
-        int d2 = occurrences[i];
-        if(d2 > d) {
-            d = d2;
+        auto it = occurrences.find(i);
+        if(it->second > d) {
+            d = it->second;
             answer = i;
         }
     }
@@ -97,10 +107,11 @@ char findMostFrequentChar(const map<char, int>& occurrences, const set<char>& se
     Returns:
         answer (char) : The most suitable character for prediction
 ***/
-.
+
 
 char findBestChar(const vector<string>& candidateWords, const set<char>& selectedChars)
 {
+	/// dùng các hàm trên để tìm kí tự tiếp theo để đoán , ko tối ưu nhma dùng tạm thuật này
     char answer;
     //Write your code here
     map<char, int> m = countOccurrences(candidateWords);
@@ -110,6 +121,7 @@ char findBestChar(const vector<string>& candidateWords, const set<char>& selecte
 
 string getWordMask(char nextChar)
 {
+	/// đoán rồi nhận lại string của máy , string sau khi update mỗi lần đoán kí tự trong hangman
     string mask;
     cout << "The next char is: " << nextChar << endl;
     cout << "Please give me your answer: ";
@@ -127,6 +139,7 @@ string getWordMask(char nextChar)
 
 bool isCorrectChar(char ch, const string& mask)
 {
+	/// kí tự đúng nếu xuất hiện trong mask , bởi vì nếu kí tự đúng thì máy sẽ update nó ( tương tự trong hangman )
     bool answer = 0;
     //Write your code here
     for(char i : mask) if(i == ch) answer = 1;
@@ -143,6 +156,7 @@ bool isCorrectChar(char ch, const string& mask)
 ***/
 bool isWholeWord(const string& mask)
 {
+	/// kiểm tra xem xâu đã update hết chưa , để xem còn có thể chơi tiếp ko
      bool answer = 1;
     //Write your code here
     for(char i : mask) answer &= ((i >= 'a') && (i <= 'z'));
@@ -163,6 +177,7 @@ bool isWholeWord(const string& mask)
 ***/
 bool wordConformToMask(const string& word, const string& mask, char ch)
 {
+	///kiểm tra xem xâu này có thể là xâu kết quả ko
     bool answer = 1;
     //Write your code here
     for(int i = 0;i < int(word.size());i ++)
@@ -185,9 +200,11 @@ bool wordConformToMask(const string& word, const string& mask, char ch)
 ***/
 vector<string> filterWordsByMask(const vector<string>& words, const string& mask, char ch)
 {
+	///lọc ra danh sách từ tiềm năng có thể là xâu kết quả
     vector<string> answer;
     //Write your code here
     for(string i : words) if(wordConformToMask(i , mask, ch))
         answer.push_back(i);
     return answer;
 }
+
