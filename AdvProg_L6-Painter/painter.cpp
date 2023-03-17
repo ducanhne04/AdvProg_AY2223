@@ -1,73 +1,89 @@
 #include "painter.h"
 
 /***
-    Args: color (SDL_Color): color value 
-        
+    Args: color (SDL_Color): color value
+
     Returns:
         None
 ***/
-void Painter::setColor(SDL_Color color) 
-{ 
-    // TODO: set the color value for the Painter and set Render Draw Color
+void Painter::setColor(SDL_Color color)
+{
+    /// TODO: set the color value for the Painter and set Render Draw Color
+    this->color = color ;
+    SDL_SetRenderDrawColor(this->renderer , color.r , color.g , color.b , color.a) ;
+    /// color.a là độ trong suốt ( 255 là trong suốt , khi giảm về 0 thì độ đục tăng dần , về 0 là chỉ thấy màu đen chứ không thấy màu ban đầu nữa )
+    /// sử dụng 3 màu cơ bản là đỏ ( red - r )  , xanh lá ( green - g)  , xanh da trời ( blue - b ) phối hợp theo tỉ lệ ( 0 đến 255  )để tạo ra các màu khác
 }
 
 
 /***
     Args: numPixel (int): number of pixel for jumping forward
-        
+
     Returns:
         None
 ***/
 void Painter::jumpForward(int numPixel)
 {
-    // TODO: jump the painter forward
+    /// TODO: jump the painter forward
+    double torad = this->angle / double(180) * 3.14159265358979323846264338327950288 ;
+    /// ta phải chuyện đổi độ sang radian
+    this-> x += cos(torad) * numPixel ;
+    this-> y -= sin(torad) * numPixel ;
+    /// sở dĩ cái y phải trừ vì trong sdl thì trục y đảo ngược ( tức là hướng xuống dưới )
 }
 
 
 /***
     Args: numPixel (int): number of pixel for jumping backward
-        
+
     Returns:
         None
 ***/
 void Painter::jumpBackward(int numPixel)
 {
-    // TODO: jump the painter backward
+    /// TODO: jump the painter backward
+    jumpForward(- numPixel) ;
 }
 
 
 /***
     Args: degree (double): the value of rotation angle
-        
+
     Returns:
         None
-***/       
+***/
 void Painter::turnLeft(double degree)
 {
-    // TODO: rotate left the painter   
+    /// TODO: rotate left the painter
+    this->angle += degree ;
+    while(this->angle < 0) this->angle += 360 ;
+    while(this->angle >= 360) this->angle -= 360 ;
 }
 
 
 /***
     Args: degree (double): the value of rotation angle
-        
+
     Returns:
         None
-***/     
+***/
 void Painter::turnRight(double degree)
 {
-    // TODO: rotate right the painter   
+    /// TODO: rotate right the painter
+    turnLeft(- degree) ;
 }
 
-/***  
-    Args: 
+/***
+    Args:
         None
     Returns:
         None
 ***/
 void Painter::randomColor()
 {
-    // TODO: set random color    
+    /// TODO: set random color
+    SDL_Color rdcl = {rand() % 256 , rand() % 256 , rand() % 256} ;
+    setColor(rdcl) ;
 }
 
 
@@ -78,7 +94,7 @@ void Painter::clearWithBgColor(SDL_Color bgColor)
 {
     SDL_Color curColor = color;
     setColor(bgColor);
-	SDL_RenderClear(renderer);    
+	SDL_RenderClear(renderer);
     setColor(curColor);
 }
 
@@ -140,7 +156,7 @@ void Painter::createParallelogram(int size)
         turnLeft(60);
         moveForward(size);
         turnLeft(120);
-    }	
+    }
 }
 
 
