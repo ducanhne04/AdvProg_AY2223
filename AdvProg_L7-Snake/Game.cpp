@@ -74,7 +74,7 @@ void Game::snakeMoveTo(Position pos) {
             score ++ ;
             snake.eatCherry() ;
             addCherry() ;
-            break ;
+            ///break ;
         }
 	}
 }
