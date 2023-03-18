@@ -25,10 +25,11 @@ Snake::~Snake()
             p = nextNode;
     }
     */
-    for(SnakeNode * p = this->tail ; p != NULL;p = p->next){
-        SnakeNode * a = p->next ;
-        delete p ;
-        p = a;
+     SnakeNode* p = this->tail;
+    while(p != NULL){
+       SnakeNode* nextNode = p->next;
+       delete p;
+       p = nextNode;
     }
 }
 
@@ -121,7 +122,7 @@ void Snake::slideTo(Position newPosition)
 void Snake::eatCherry()
 {
 	/* YOUR CODE HERE */
-	this->cherry ++ ;
+	cherry ++ ;
 }
 
 /***
@@ -162,7 +163,7 @@ void Snake::move(Direction direction)
     // If cherry > 0, cherry descrease one and growAtFront() with newPosition
     if (cherry > 0) {
         /* YOUR CODE HERE */
-        this->cherry -- ;
+        cherry -- ;
         growAtFront(newPosition);
     } else {
     	game.snakeLeave(tail->position);

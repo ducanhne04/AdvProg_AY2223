@@ -56,15 +56,26 @@ void Game::snakeMoveTo(Position pos) {
 	//
 	//
 	//
-	// END CODE HERE
-	if (getCellType(pos) == CELL_SNAKE || getCellType(pos) == CELL_OFF_BOARD)
-		status = GAME_OVER;
-	else if (getCellType(pos) == CELL_CHERRY) {
-		score++;
-		snake.eatCherry();
-		addCherry();
+	switch(getCellType(pos)){
+	       case CELL_OFF_BOARD:{
+	              status = GAME_OVER;
+	              break;
+	       }
+	       case CELL_SNAKE:{
+                     status = GAME_OVER;
+                     break;
+	       }
+	       case CELL_CHERRY:{
+	              score ++;
+	              snake.eatCherry();
+	              addCherry();
+	              break;
+	       }
+	       default:{
+	              setCellType(pos, CELL_SNAKE);
+	       }
 	}
-	else setCellType(pos, CELL_SNAKE);
+	// END CODE HERE
 }
 
 
@@ -85,9 +96,10 @@ void Game::snakeLeave(Position position)
 	//
 	//
 	//
+	setCellType(position, CELL_EMPTY);
 	// END CODE HERE
-	setCellType(position , CELL_EMPTY) ;
 }
+
 
 
 // DO NOT change this method
